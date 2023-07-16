@@ -1,81 +1,45 @@
 import express from 'express';
-import Todo from '../models/Todo.js';
+
+// utility
+import { updateTodoLists } from '../utility/updateTodoLists.js';
+import { getTodoLists } from '../utility/getTodoLists.js';
+
 
 const baseRouter = express.Router();
 
 // get all todos.
 // method: GET
-baseRouter.get('/todos', async (req, res) => {
-  try {
-    const todos = await Todo.find();
-    res.status(200).json(todos);
-  
-  } catch (error) {
-    res.status(500).json({message: 'Error fetching todos'})
-  }
-})
+baseRouter.get('/todos/:id', async (req, res) => {
+  const userId = req.params.id;
 
-// create a single todo.
-// method: POST
-baseRouter.post('/todos', async (req, res) => {
-  
-  const { title, completed, author } = req.body;
-  const newTodo = new Todo({
-    title: title,
-    completed: completed,
-    author: author,
-  });
-  
   try {
-    const savedTodo = await newTodo.save();
-    res.status(200).json(savedTodo);
+    const todos = await getTodoLists(userId);
+
+    if(typeof todos !== "object") throw Error;
+
+    res.status(200).json(todos.todoLists);
 
   } catch (error) {
-    res.status(500).json({message: 'Error creating todo'});
+    res.status(500).json({ message: `Error fetching todos\n${error}` });
   }
 });
-
 
 // update a single todo
 // method: PUT
-baseRouter.put('/todos/:id', async (req, res) => {
-  const updatedFields = req.body;
-  const todo_Id = req.params.id;
+baseRouter.put('/todos', async (req, res) => {
+  const updatedFields = req.body.updatedFields;
+  const userId = req.body.userId;
 
-  try {
-    const result = await Todo.updateOne(
-      { _id: todo_Id },
-      { $set: updatedFields }
-    );
+  console.clear();
 
-    res.status(200).json(result);
+  console.log("updated fields:");
+  console.log(updatedFields);
 
-  } catch (error) {
-    res.status(500).json({message: 'Error updating todo'});
-  }
+  await updateTodoLists(userId, updatedFields);
+  res.status(200).json({ "message": "todolists updated successfully." });
 });
 
 
-// delete a single todo
-// method: DELETE
-baseRouter.delete('/todos/:id', async (req, res) => {
-  const todo_Id = req.params.id;
-  
-  try {
-    const deletedTodo = await Todo.deleteOne({
-      _id: todo_Id,
-    });
-
-    if(deletedTodo.acknowledged) {
-      console.log('Todo deleted successfully.');
-    }
-
-    res.status(200).json(deletedTodo);
-
-  } catch (error) {
-    res.status(500).json({message: 'Error deleting todo'});
-  }
-});
 
 
 export { baseRouter };

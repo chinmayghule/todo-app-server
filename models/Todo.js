@@ -6,4 +6,6 @@ const todoSchema = new mongoose.Schema({
   author: { type: String, required: true },
 });
 
-export default mongoose.model('Todo', todoSchema);
+export default mongoose.model('TodoItem', todoSchema);
+
+export { todoSchema };
