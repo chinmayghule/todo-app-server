@@ -6,8 +6,8 @@ import { baseRouter } from './routes/baseRoutes.js';
 
 dotenv.config();
 
-const port = 5000;
-const ipAddress = '127.0.0.1';
+const port = 3000;
+const ipAddress = '192.168.43.210';
 
 const app = express();
 app.use(cors());
@@ -31,17 +31,11 @@ mongoose.connect(process.env.VITE_ATLAS_URI, {
   app.use('/', baseRouter);
   
   app.get('*', (req, res) => {
-    // res.status(404).json({message: 'wrong link'});
     res.status(404).send("<h1>404 Not Found</h1>");
   });
   
 
 
-app.listen(port, '0.0.0.0', () => {
+app.listen(port, ipAddress, () => {
   console.log(`Listening on ${ipAddress}:${port}`);
 });
-
-// const server = app.listen(() => {
-//   const { address, port } = server.address();
-//   console.log(`Server running on ${address}:${port}`);
-// });
