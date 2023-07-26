@@ -5,6 +5,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
+    "build": " ",
     "server": "node --watch server.js"
   },
   "keywords": [],
