@@ -5,7 +5,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "build": " ",
+    "build": "npm install",
     "server": "node server.js"
   },
   "keywords": [],
